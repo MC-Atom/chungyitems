@@ -16,11 +16,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 @OnlyIn(Dist.CLIENT)
-public class ChugusiserGuiGuiWindow extends ContainerScreen<ChugusiserGuiGui.GuiContainerMod> {
+public classChungiserGuiGuiWindow extends ContainerScreen<ChugusiserGuiGui.GuiContainerMod> {
 	private World world;
 	private int x, y, z;
 	private PlayerEntity entity;
-	public ChugusiserGuiGuiWindow(ChugusiserGuiGui.GuiContainerMod container, PlayerInventory inventory, ITextComponent text) {
+	public ChungiserGuiGuiWindow(ChugusiserGuiGui.GuiContainerMod container, PlayerInventory inventory, ITextComponent text) {
 		super(container, inventory, text);
 		this.world = container.world;
 		this.x = container.x;
