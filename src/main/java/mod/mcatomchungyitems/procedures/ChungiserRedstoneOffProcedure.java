@@ -5,8 +5,8 @@ import mod.mcatomchungyitems.ChungyitemsModElements;
 import java.util.Map;
 
 @ChungyitemsModElements.ModElement.Tag
-public class ChungusiserRedstoneOffProcedure extends ChungyitemsModElements.ModElement {
-	public ChungusiserRedstoneOffProcedure(ChungyitemsModElements instance) {
+public class ChungiserRedstoneOffProcedure extends ChungyitemsModElements.ModElement {
+	public ChungiserRedstoneOffProcedure(ChungyitemsModElements instance) {
 		super(instance, 5);
 	}
 
