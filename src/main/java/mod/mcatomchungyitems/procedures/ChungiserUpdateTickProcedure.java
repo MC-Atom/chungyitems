@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @ChungyitemsModElements.ModElement.Tag
-public class ChungusiserUpdateTickProcedure extends ChungyitemsModElements.ModElement {
-	public ChungusiserUpdateTickProcedure(ChungyitemsModElements instance) {
+public class ChungiserUpdateTickProcedure extends ChungyitemsModElements.ModElement {
+	public ChungiserUpdateTickProcedure(ChungyitemsModElements instance) {
 		super(instance, 3);
 	}
 	public boolean isValidRecipe = false;
