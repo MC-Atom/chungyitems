@@ -1,6 +1,7 @@
 
 package mod.mcatomchungyitems.block;
 
+import mod.mcatomchungyitems.ChungyitemsMod;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraftforge.registries.ObjectHolder;

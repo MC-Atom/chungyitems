@@ -34,13 +34,13 @@ public class ChugusiserInputItemProcedure extends ChungyitemsModElements.ModElem
 		int itemCount = item.getCount();
 		Item itemType = item.getItem();
 
-
-		if (Items.get(itemType) != null) {
-			Items.put(itemType, Items.get(itemType) + itemCount);
-		} else {
-			Items.put(itemType,itemCount);
+		if (itemType != "Air") {
+			if (Items.get(itemType) != null) {
+				Items.put(itemType, Items.get(itemType) + itemCount);
+			} else {
+				Items.put(itemType, itemCount);
+			}
 		}
-
 	}
 
 	public static ItemStack getItemStack(int sltid, Entity entity) {
@@ -113,17 +113,17 @@ public class ChugusiserInputItemProcedure extends ChungyitemsModElements.ModElem
 
 		HashMap<Item, Integer> Items = new HashMap<>();
 
-		ItemStack guiSlot0 = getItemStack(0,entity);
 		ItemStack guiSlot1 = getItemStack(1,entity);
 		ItemStack guiSlot2 = getItemStack(2,entity);
 		ItemStack guiSlot3 = getItemStack(3,entity);
 		ItemStack guiSlot4 = getItemStack(4,entity);
+		ItemStack guiSlot5 = getItemStack(5,entity);
 
-		addItem(guiSlot0,Items);
 		addItem(guiSlot1,Items);
 		addItem(guiSlot2,Items);
 		addItem(guiSlot3,Items);
 		addItem(guiSlot4,Items);
+		addItem(guiSlot5,Items);
 
 		//ItemStack guiSlot0 = getItemStack((int) (0));
 		//int guiAmountSlot0 = getAmount((int) (0));

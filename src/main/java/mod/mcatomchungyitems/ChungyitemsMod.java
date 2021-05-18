@@ -62,7 +62,7 @@ public class ChungyitemsMod {
 		FMLJavaModLoadingContext.get().getModEventBus().register(this);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientLoad);
-		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(IRecipeSerializer.class,this::registerRecipeSerialisers);
+		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(IRecipeSerializer.class,this::registerRecipeSerializers);
 		MinecraftForge.EVENT_BUS.register(new ChungyitemsModFMLBusEvents(this));
 	}
 
@@ -109,8 +109,8 @@ public class ChungyitemsMod {
 			this.parent.elements.getElements().forEach(element -> element.serverLoad(event));
 		}
 	}
-	private void registerRecipeSerialisers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
-		Registry.register(Registry.RECIPE_TYPE, new ResourceLocation(CHUNGISER_BLOCK_RECIPE.toString()),CHUNGISER_BLOCK_RECIPE);
+	private void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+		Registry.register(Registry.RECIPE_TYPE, new ResourceLocation("chungyitems:chungiser_block_recipe"),CHUNGISER_BLOCK_RECIPE);
 		System.out.println("I registered " + CHUNGISER_BLOCK_RECIPE);
 		event.getRegistry().register(ChungiserRecipe.SERIALIZER);
 	}

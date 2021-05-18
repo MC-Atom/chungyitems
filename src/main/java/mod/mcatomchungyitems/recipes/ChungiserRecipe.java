@@ -28,12 +28,14 @@ public class ChungiserRecipe implements IRecipe <IInventory> {
     private final ItemStack output;
     private final Block block;
     private final ResourceLocation id;
+    private final int count;
 
-    public ChungiserRecipe(Ingredient input, ItemStack output, Block block, ResourceLocation id) {
+    public ChungiserRecipe(Ingredient input, ItemStack output, Block block, ResourceLocation id,int count) {
         this.input = input;
         this.output = output;
         this.block = block;
         this.id = id;
+        this.count = count;
 
         System.out.println("lowoaded " + this.toString());
     }
@@ -41,7 +43,7 @@ public class ChungiserRecipe implements IRecipe <IInventory> {
     @Override
     public String toString() {
         //return super.toString();
-        return "chungiser recipie [input = " + this.input + ", output = " + this.output + " , block = " + this.block.getRegistryName() + ", id = " + this.id + "]";
+        return "chungiser recipe [input = " + this.input + ", count = " + this.count + ", output = " + this.output + " , block = " + this.block.getRegistryName() + ", id = " + this.id + "]";
     }
 
     @Override
@@ -93,19 +95,28 @@ public class ChungiserRecipe implements IRecipe <IInventory> {
         @Override
         public ChungiserRecipe read(ResourceLocation recipeId, JsonObject json) {
 
-            final JsonElement inputElement = JSONUtils.isJsonArray(json,"input") ? JSONUtils.getJsonArray(json, "input") : JSONUtils.getJsonObject(json, "input");
+            final JsonElement inputElement;
+
+            if (JSONUtils.isJsonArray(json, "input")) {
+                inputElement = JSONUtils.getJsonArray(json,"input");
+            } else {
+                inputElement = JSONUtils.getJsonObject(json, "input");
+            }
+
             final Ingredient input = Ingredient.deserialize(inputElement);
 
             final ItemStack output = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json,"output"));
 
-            final ResourceLocation blockId = new ResourceLocation(JSONUtils.getString(json,"blockId"));
+            final int count = JSONUtils.getInt(json,"count");
+
+            final ResourceLocation blockId = new ResourceLocation(JSONUtils.getString(json,"blockid"));
             final Block block = ForgeRegistries.BLOCKS.getValue(blockId);
 
             if (block == null || block == Blocks.AIR) {
-                throw new IllegalStateException("The Block " + blockId + "does not exist!!!!!! >=[");
+                throw new IllegalStateException("The Block " + blockId + " does not exist!!!!!! >=[");
             }
 
-            return new ChungiserRecipe(input,output,block,recipeId);
+            return new ChungiserRecipe(input,output,block,recipeId,count);
         }
 
         @Nullable
@@ -116,13 +127,14 @@ public class ChungiserRecipe implements IRecipe <IInventory> {
             final ItemStack output = buffer.readItemStack();
             final ResourceLocation blockId = buffer.readResourceLocation();
             final Block block = ForgeRegistries.BLOCKS.getValue(blockId);
+            final int count = buffer.readInt();
 
             if (block == null) {
 
                 throw new IllegalStateException("The block " + blockId + " does not exist.");
             }
 
-            return new ChungiserRecipe(input, output, block, recipeId);
+            return new ChungiserRecipe(input, output, block, recipeId, count);
         }
 
         @Override
