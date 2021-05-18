@@ -41,10 +41,10 @@ import java.util.Map;
 import java.util.HashMap;
 
 @ChungyitemsModElements.ModElement.Tag
-public class ChugusiserGuiGui extends ChungyitemsModElements.ModElement {
+public class ChungiserGuiGui extends ChungyitemsModElements.ModElement {
 	public static HashMap guistate = new HashMap();
 	private static ContainerType<GuiContainerMod> containerType = null;
-	public ChugusiserGuiGui(ChungyitemsModElements instance) {
+	public ChungiserGuiGui(ChungyitemsModElements instance) {
 		super(instance, 7);
 		elements.addNetworkMessage(ButtonPressedMessage.class, ButtonPressedMessage::buffer, ButtonPressedMessage::new,
 				ButtonPressedMessage::handler);
