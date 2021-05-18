@@ -85,12 +85,12 @@ import java.util.Collections;
 import io.netty.buffer.Unpooled;
 
 @ChungyitemsModElements.ModElement.Tag
-public class ChugusiserBlock extends ChungyitemsModElements.ModElement {
+public class ChungiserBlock extends ChungyitemsModElements.ModElement {
 	@ObjectHolder("chungyitems:chugusiser")
 	public static final Block block = null;
 	@ObjectHolder("chungyitems:chugusiser")
 	public static final TileEntityType<CustomTileEntity> tileEntityType = null;
-	public ChugusiserBlock(ChungyitemsModElements instance) {
+	public ChungiserBlock(ChungyitemsModElements instance) {
 		super(instance, 2);
 		FMLJavaModLoadingContext.get().getModEventBus().register(new TileEntityRegisterHandler());
 
