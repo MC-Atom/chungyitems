@@ -5,8 +5,8 @@ import mod.mcatomchungyitems.ChungyitemsModElements;
 import java.util.Map;
 
 @ChungyitemsModElements.ModElement.Tag
-public class ChungusiserUpdateGUIProcedure extends ChungyitemsModElements.ModElement {
-	public ChungusiserUpdateGUIProcedure(ChungyitemsModElements instance) {
+public class ChungiserUpdateGUIProcedure extends ChungyitemsModElements.ModElement {
+	public ChungiserUpdateGUIProcedure(ChungyitemsModElements instance) {
 		super(instance, 9);
 	}
 
