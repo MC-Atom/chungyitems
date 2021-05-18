@@ -25,8 +25,8 @@ import java.util.Map;
 import java.lang.*;
 
 @ChungyitemsModElements.ModElement.Tag
-public class ChugusiserInputItemProcedure extends ChungyitemsModElements.ModElement {
-	public ChugusiserInputItemProcedure(ChungyitemsModElements instance) {
+public class ChungiserInputItemProcedure extends ChungyitemsModElements.ModElement {
+	public ChungiserInputItemProcedure(ChungyitemsModElements instance) {
 		super(instance, 7);
 	}
 
