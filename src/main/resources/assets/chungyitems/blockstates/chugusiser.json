@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "chungyitems:block/chugusiser"
+    },
+    "facing=east": {
+      "model": "chungyitems:block/chugusiser",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "chungyitems:block/chugusiser",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "chungyitems:block/chugusiser",
+      "y": 270
+    }
+  }
+}

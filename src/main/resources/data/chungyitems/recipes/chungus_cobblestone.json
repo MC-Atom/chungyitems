@@ -1,0 +1,12 @@
+{
+  "type": "chungyitems:chungiser_block_recipe",
+  "blockid": "chungyitems:chungusiser",
+  "cookingtime": 40,
+  "ingredient": {
+    "item": "minecraft:cobblestone",
+    "count": 160
+  },
+  "result": {
+    "item": "chungyitems:chugus_cobblestone"
+  }
+}

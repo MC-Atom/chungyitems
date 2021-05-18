@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "chungyitems:blocks/a",
+    "up": "chungyitems:blocks/a",
+    "north": "chungyitems:blocks/a",
+    "east": "chungyitems:blocks/a",
+    "south": "chungyitems:blocks/a",
+    "west": "chungyitems:blocks/a",
+    "particle": "chungyitems:blocks/a"
+  }
+}
