@@ -195,7 +195,7 @@ public class ChugusiserBlock extends ChungyitemsModElements.ModElement {
 			int y = pos.getY();
 			int z = pos.getZ();
 			{
-				ChungusiserUpdateTickProcedure.executeProcedure(world);
+				ChungusiserUpdateTickProcedure.executeProcedure(x,y,z,world);
 			}
 			world.getPendingBlockTicks().scheduleTick(new BlockPos(x, y, z), this, 10);
 		}

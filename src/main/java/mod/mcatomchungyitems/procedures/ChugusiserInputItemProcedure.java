@@ -29,17 +29,16 @@ public class ChugusiserInputItemProcedure extends ChungyitemsModElements.ModElem
 	public ChugusiserInputItemProcedure(ChungyitemsModElements instance) {
 		super(instance, 7);
 	}
-
+	/*
 	public static void addItem (ItemStack item, HashMap<Item,Integer> Items) {
 		int itemCount = item.getCount();
 		Item itemType = item.getItem();
 
-		if (itemType != "Air") {
-			if (Items.get(itemType) != null) {
-				Items.put(itemType, Items.get(itemType) + itemCount);
-			} else {
-				Items.put(itemType, itemCount);
-			}
+
+		if (Items.get(itemType) != null) {
+			Items.put(itemType, Items.get(itemType) + itemCount);
+		} else {
+			Items.put(itemType, itemCount);
 		}
 	}
 
@@ -69,10 +68,10 @@ public class ChugusiserInputItemProcedure extends ChungyitemsModElements.ModElem
 			}
 		}
 		return 0;
-	}
+	}*/
 
 	public static void executeProcedure(Map<String, Object> dependencies) {
-		if (dependencies.get("entity") == null) {
+		/*if (dependencies.get("entity") == null) {
 			if (!dependencies.containsKey("entity"))
 				ChungyitemsMod.LOGGER.warn("Failed to load dependency entity for procedure ChugusiserInputItem!");
 			return;
@@ -133,6 +132,6 @@ public class ChugusiserInputItemProcedure extends ChungyitemsModElements.ModElem
 					.handleCommand(new CommandSource(ICommandSource.DUMMY, new Vector3d(x, y, z), Vector2f.ZERO, (ServerWorld) world, 4, "",
 							new StringTextComponent(""), ((World) world).getServer(), null).withFeedbackDisabled(), "say " + Items);
 
-		}
+		}*/
 	}
 }
