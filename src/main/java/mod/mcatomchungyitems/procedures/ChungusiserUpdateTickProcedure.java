@@ -68,13 +68,28 @@ public class ChungusiserUpdateTickProcedure extends ChungyitemsModElements.ModEl
 		addItem(guiSlot5,items);
 
 		Set<Item> itemsInChungusiser = items.keySet();
-		Boolean sameItems = false;
+
 
 		System.out.println("recipes = " + recipes);
 		System.out.println("itemsInChungusiser = " + itemsInChungusiser);
 
 		for (IRecipe<?> recipe : recipes) {
-			recipe.getIngredients().contains(items.)
+			Boolean validRecipe = true;
+
+			if (recipe.getIngredients().contains(itemsInChungusiser.toArray()[0])) {
+				for thing in getIngreence {
+					if (recipe.contains(item)) {
+						if (recipe.count <= items.get(item)){
+							then check the opposite direction
+						}
+					}
+				}
+				for (Item item : itemsInChungusiser) {
+
+				}
+			} else {
+				validRecipe = false;
+			}
 		}
 
 	}
