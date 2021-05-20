@@ -2,8 +2,14 @@
 package mod.mcatomchungyitems.block;
 
 import mod.mcatomchungyitems.ChungyitemsMod;
+import mod.mcatomchungyitems.recipes.ChungiserRecipe;
+import net.minecraft.block.*;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.world.IWorld;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.registries.ObjectHolder;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import net.minecraftforge.items.IItemHandler;
@@ -62,12 +68,7 @@ import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Block;
 
-import mod.mcatomchungyitems.procedures.ChungusiserUpdateTickProcedure;
 import mod.mcatomchungyitems.procedures.ChungusiserRedstoneOnProcedure;
 import mod.mcatomchungyitems.procedures.ChungusiserRedstoneOffProcedure;
 import mod.mcatomchungyitems.procedures.ChugusiserClientDisplayRandomTickProcedure;
@@ -76,12 +77,9 @@ import mod.mcatomchungyitems.ChungyitemsModElements;
 
 import javax.annotation.Nullable;
 
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
-import java.util.Random;
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Collections;
 
 import io.netty.buffer.Unpooled;
 
@@ -116,6 +114,9 @@ public class ChugusiserBlock extends ChungyitemsModElements.ModElement {
 	public static class CustomBlock extends Block {
 		public static final DirectionProperty FACING = HorizontalBlock.HORIZONTAL_FACING;
 		public static final BooleanProperty LIT = BlockStateProperties.LIT;
+		public static int timeCooked = 0;
+		public static boolean isCooking = false;
+
 		public CustomBlock() {
 			super(Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(1f, 10f).setLightLevel(s -> 0).harvestLevel(0)
 					.harvestTool(ToolType.PICKAXE).setRequiresTool());
@@ -194,9 +195,91 @@ public class ChugusiserBlock extends ChungyitemsModElements.ModElement {
 			int x = pos.getX();
 			int y = pos.getY();
 			int z = pos.getZ();
-			{
-				ChungusiserUpdateTickProcedure.executeProcedure(x,y,z,world);
+			IRecipe currentRecipe = null;
+
+			isCooking = false;
+
+			ItemStack itemInMeter = ItemStack.EMPTY;
+
+			Collection<IRecipe<?>> recipes = ChungyitemsMod.getRecipes(ChungyitemsModElements.CHUNGISER_BLOCK_RECIPE, world.getRecipeManager()).values();
+
+			//double itemsNeededToCraft = 160;
+
+			HashMap<Item, Integer> items = new HashMap<>();
+			BlockPos blockPosition = new BlockPos((int) x, (int) y, (int) z);
+			ArrayList<ItemStack> guiSlots = new ArrayList<>();
+
+			ItemStack guiSlot1 = getItemStack(world, blockPosition, 1);
+			ItemStack guiSlot2 = getItemStack(world, blockPosition, 2);
+			ItemStack guiSlot3 = getItemStack(world, blockPosition, 3);
+			ItemStack guiSlot4 = getItemStack(world, blockPosition, 4);
+			ItemStack guiSlot5 = getItemStack(world, blockPosition, 5);
+
+			ItemStack guiSlot6 = getItemStack(world, blockPosition, 6); //The Output
+
+			addItem(guiSlot1,items,guiSlots);
+			addItem(guiSlot2,items,guiSlots);
+			addItem(guiSlot3,items,guiSlots);
+			addItem(guiSlot4,items,guiSlots);
+			addItem(guiSlot5,items,guiSlots);
+
+			if (items.size() > 0) {
+				for (IRecipe<?> recipe : recipes) {
+					if (recipe instanceof ChungiserRecipe) {
+						if (((ChungiserRecipe) recipe).isValid(items, recipe, guiSlots)) {
+							currentRecipe = recipe;
+							isCooking = true;
+						}
+					}
+				}
 			}
+
+			System.out.println("guiSlots: " + guiSlots);
+
+			if (currentRecipe != null && timeCooked >= ((ChungiserRecipe) currentRecipe).getCookingTime()){
+				if ((guiSlot6.getItem() == ((ChungiserRecipe) currentRecipe).getOutput().getItem() || guiSlot6.getItem() == Blocks.AIR.asItem()) && ((ChungiserRecipe) currentRecipe).getOutput().getCount() < 64) {
+					if (guiSlot6.getItem() == Blocks.AIR.asItem()) {
+						TileEntity _ent = world.getTileEntity(pos);
+						IRecipe finalCurrentRecipe = currentRecipe;
+
+						_ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(capability -> {
+							if (capability instanceof IItemHandlerModifiable) {
+								((IItemHandlerModifiable) capability).setStackInSlot(6, ((ChungiserRecipe) finalCurrentRecipe).getOutput());
+							}
+						});
+
+					} else {
+						guiSlot6.grow(((ChungiserRecipe) currentRecipe).getOutput().getCount());
+					}
+
+					int numOfItems = ((ChungiserRecipe) currentRecipe).getCount();
+					for (ItemStack item : guiSlots) {
+						if (((ChungiserRecipe) currentRecipe).getInput().test(item)) {
+							System.out.println("item: " + item);
+							int numInGuiSlot = item.getCount();
+							Item itemtype = item.getItem();
+							if (numOfItems >= numInGuiSlot) {
+								item.shrink(numInGuiSlot);
+								numOfItems = numOfItems - numInGuiSlot;
+								System.out.println("item count: " + numInGuiSlot + ", number of items: " + numOfItems);
+							} else {
+								item.shrink(numOfItems);
+								numOfItems -= numOfItems;
+								System.out.println("num of items: " + numOfItems);
+							}
+						}
+						System.out.println(items.toString());
+					}
+					timeCooked = 0;
+				}
+			}else if (isCooking) {
+				timeCooked ++;
+			} else {
+				timeCooked = 0;
+			}
+
+			System.out.println("timeCooked: " + timeCooked);
+
 			world.getPendingBlockTicks().scheduleTick(new BlockPos(x, y, z), this, 10);
 		}
 
@@ -439,6 +522,40 @@ public class ChugusiserBlock extends ChungyitemsModElements.ModElement {
 			super.remove();
 			for (LazyOptional<? extends IItemHandler> handler : handlers)
 				handler.invalidate();
+		}
+	}
+
+
+	public static void addItem (ItemStack item, HashMap<Item,Integer> Items, ArrayList<ItemStack> guislots) {
+		int itemCount = item.getCount();
+		Item itemType = item.getItem();
+
+		if (itemType != Blocks.AIR.asItem()) {
+			Items.merge(itemType, itemCount, Integer::sum);
+			guislots.add(item);
+		}
+	}
+
+	public static ItemStack getItemStack(World world, BlockPos pos, int sltid) {
+		TileEntity _ent = world.getTileEntity(pos);
+		AtomicReference<ItemStack> _output = new AtomicReference<>(ItemStack.EMPTY);
+
+		if (_ent != null) {
+			_ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(capability -> {
+				_output.set(capability.getStackInSlot(sltid));
+			});
+		}
+		return _output.get();
+	}
+
+	public static void setSlot (IWorld world, int x, int y, int z, int slotId, ItemStack finalItemStack) {
+		TileEntity _ent = world.getTileEntity(new BlockPos((int) x, (int) y, (int) z));
+		if (_ent != null) {
+			_ent.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(capability -> {
+				if (capability instanceof IItemHandlerModifiable) {
+					((IItemHandlerModifiable) capability).setStackInSlot(slotId, finalItemStack);
+				}
+			});
 		}
 	}
 }

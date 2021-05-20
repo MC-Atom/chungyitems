@@ -6,10 +6,12 @@ import mod.mcatomchungyitems.ChungyitemsMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.*;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -17,6 +19,11 @@ import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 import static mod.mcatomchungyitems.ChungyitemsModElements.CHUNGISER_BLOCK_RECIPE;
 
@@ -29,13 +36,15 @@ public class ChungiserRecipe implements IRecipe <IInventory> {
     private final Block block;
     private final ResourceLocation id;
     private final int count;
+    private final int cookingTime;
 
-    public ChungiserRecipe(Ingredient input, ItemStack output, Block block, ResourceLocation id,int count) {
+    public ChungiserRecipe(Ingredient input, ItemStack output, Block block, ResourceLocation id, int count, int cookingTime) {
         this.input = input;
         this.output = output;
         this.block = block;
         this.id = id;
         this.count = count;
+        this.cookingTime = cookingTime;
 
         System.out.println("lowoaded " + this.toString());
     }
@@ -81,9 +90,67 @@ public class ChungiserRecipe implements IRecipe <IInventory> {
         return CHUNGISER_BLOCK_RECIPE;
     }
 
-    public boolean isValid(ItemStack input, Block block) {
-        return this.input.test(input) && this.block == block;
+    public int getCount() {
+        return count;
     }
+
+    public int getCookingTime() {
+        return cookingTime;
+    }
+
+    public Ingredient getInput() {
+        return input;
+    }
+
+    public ItemStack getOutput() {
+        return output;
+    }
+
+    public ArrayList<Ingredient> getMyIngredients() {
+        ArrayList<Ingredient> output = new ArrayList<>();
+        output.add(this.input);
+        return output;
+    }
+
+    public boolean isValid(HashMap<Item, Integer> items, IRecipe<?> recipe, ArrayList<ItemStack> guiSlots) {
+
+        Set<Item> itemsInChungusiser = items.keySet();
+
+        Boolean validRecipe = true;
+
+        if (this.input.test(guiSlots.get(0)) && recipe instanceof ChungiserRecipe) {
+            for (Ingredient ingredient : ((ChungiserRecipe) recipe).getMyIngredients()) {
+
+                Boolean isItemInList = false;
+                Item itemThingy = null;
+                for (ItemStack item : guiSlots) {
+                    if(this.input.test(item)) {
+                        isItemInList = true;
+                        itemThingy = item.getItem();
+                        break;
+                    }
+                }
+
+                if (!isItemInList || items.get(itemThingy) == null || this.count > items.get(itemThingy)) {
+                    validRecipe = false;
+                    break;
+                }
+            }
+            for (ItemStack item : guiSlots) {
+                if (!this.input.test(item) ) {
+                    validRecipe = false;
+                    break;
+                }
+            }
+
+        } else {
+            validRecipe = false;
+        }
+
+
+        return validRecipe;
+    }
+
 
     private static class Serialiser extends ForgeRegistryEntry <IRecipeSerializer<?>> implements IRecipeSerializer <ChungiserRecipe> {
 
@@ -109,6 +176,8 @@ public class ChungiserRecipe implements IRecipe <IInventory> {
 
             final int count = JSONUtils.getInt(json,"count");
 
+            final int cookingTime = JSONUtils.getInt(json,"cookingtime");
+
             final ResourceLocation blockId = new ResourceLocation(JSONUtils.getString(json,"blockid"));
             final Block block = ForgeRegistries.BLOCKS.getValue(blockId);
 
@@ -116,25 +185,27 @@ public class ChungiserRecipe implements IRecipe <IInventory> {
                 throw new IllegalStateException("The Block " + blockId + " does not exist!!!!!! >=[");
             }
 
-            return new ChungiserRecipe(input,output,block,recipeId,count);
+            return new ChungiserRecipe(input,output,block,recipeId,count,cookingTime);
         }
 
         @Nullable
         @Override
         public ChungiserRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
             // Reads a recipe from a packet buffer. This code is called on the client.
+            System.out.println(buffer);
             final Ingredient input = Ingredient.read(buffer);
             final ItemStack output = buffer.readItemStack();
             final ResourceLocation blockId = buffer.readResourceLocation();
             final Block block = ForgeRegistries.BLOCKS.getValue(blockId);
             final int count = buffer.readInt();
+            final int cookingTime = buffer.readInt();
 
             if (block == null) {
 
                 throw new IllegalStateException("The block " + blockId + " does not exist.");
             }
 
-            return new ChungiserRecipe(input, output, block, recipeId, count);
+            return new ChungiserRecipe(input, output, block, recipeId, count, cookingTime);
         }
 
         @Override

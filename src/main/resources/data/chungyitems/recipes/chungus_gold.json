@@ -2,11 +2,11 @@
   "type": "chungyitems:chungiser_block_recipe",
   "blockid": "chungyitems:chugusiser",
   "cookingtime": 10,
-  "count": 160,
+  "count": 192,
   "input": {
-    "item": "minecraft:cobblestone"
+    "item": "minecraft:gold"
   },
   "output": {
-    "item": "chungyitems:chungus_cobblestone"
+    "item": "minecraft:gold_block"
   }
 }
